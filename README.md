@@ -16,39 +16,48 @@ sudo dnf install git-all
 sudo apt install git-all
 ```
 
-## 02 Charger le référentiel Keras
+## 02 Charger le référentiel <b>Keras</b>
 <a href="https://github.com/keras-team/keras/tree/master">
      <img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/keras_master.png" width="512">
 </a>
 
-## 03 Décompresser le fichier keras_master.zip dans un répertoire de travail
+## 03 Décompresser le fichier <b>keras_master.zip</b> dans un répertoire de travail
 exemple :
 ```
 C:\dev\keras-master
 ou 
-/mnt/c/dev/keras-master       /home/utilisateur/keras-master
+/mnt/c/dev/keras-master    
+/home/utilisateur/keras-master 
 ```
 
 ## 04 Mise à jour des librairies de l’environnement <b>base</b>
-
-<br>
-<div>Mise à jour des librairies de l’environnement <b>base</b></div>
 
 ```
 conda activate root
 conda update --all
 python -m pip install --upgrade pip
 ```
-<div>Création de l’environnement <b>cours</b> </div>
-<br>
-<div><b>Windows</b> </div>
-<br>
+
+## 05 Création de l’environnement <b>keras</b>
+
+## 05.1 <b>Windows</b>
 
 ```
-# conda remove -n cours --all -y
-conda create -n cours -c conda-forge  python==3.10 ipython ipython-sql jupyter notebook numpy pandas pyarrow matplotlib seaborn portpicker biopython flatbuffers redis colour pydot pygraphviz pyyaml pyspark folium scikit-image scikit-learn plotly imgaug tifffile imagecodecs 
+conda create -n keras -c conda-forge  python==3.12 ipython ipython-sql jupyter notebook numpy pandas pyarrow matplotlib seaborn portpicker biopython flatbuffers redis colour pydot pygraphviz pyyaml pyspark folium scikit-image scikit-learn plotly imgaug tifffile imagecodecs
+```
 
-conda activate cours
+## 05.2 <b>Linux</b>
+
+```
+conda create -p /home/razvan/anaconda3/envs/keras -c conda-forge  python==3.12 ipython ipython-sql jupyter notebook numpy pandas pyarrow matplotlib seaborn portpicker biopython flatbuffers redis colour pydot pygraphviz pyyaml pyspark folium scikit-image scikit-learn plotly imgaug tifffile imagecodecs
+```
+
+## 06 Configuration de l’environnement <b>keras</b>
+
+dans le répertoire ou vous avez décompressé le fichier <b>keras_master.zip</b> exécutez les commandes suivantes 
+
+```
+conda activate keras
 
 pip install --upgrade keras tensorflow
 ```
