@@ -26,7 +26,7 @@ Ouvrir un environnement de commandes (une fenêtre shell pour Mac ou Linux).
 >> <b>Linux</b>
 <img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/terminal.png" width="128">
 
-Exécutez les commandes suivantes dans l'environnement de commandes <b>(utilisez copier/coller)</b>
+Exécutez les commandes suivantes dans l'environnement de commandes <b>(utilisez copier/coller et attention aux systèmes d’exploitation)</b>
 
 ```
 conda activate root
