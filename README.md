@@ -6,6 +6,9 @@
 # Installation
 
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda</a></b>
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/anaconda.png" width="256">
+
+
 
 ## 04 Mise à jour des librairies de l’environnement <b>base</b>
 
