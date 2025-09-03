@@ -1,6 +1,6 @@
-# Bienvenue sur le référentiel DeepLearning 
+# Bienvenue sur le référentiel des journées scientifiques de la FHU TARGET
 
-<img src="https://raw.githubusercontent.com/rbizoi/DeepLearning/refs/heads/main/images/style_transfer_result_at_iteration_19.png" width="768">
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/fhu_2025.png" width="256">
 
 
 <b><div>Installation</div></b>
