@@ -17,6 +17,9 @@ sudo apt install git-all
 ```
 
 ## 02 Charger le référentiel Keras
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/keras_master.png" width="256">
+
+https://github.com/keras-team/keras/tree/master
 
 
 <br>
