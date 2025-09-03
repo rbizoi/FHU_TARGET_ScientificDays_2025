@@ -11,7 +11,7 @@
 # Installation 
 
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda <br>download(Windows, Linux, MacOs)</a></b>
-<a href="https://www.anaconda.com/download/success"><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/anaconda_setup.png" width="256"></a><
+<a href="https://www.anaconda.com/download/success"><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/anaconda_setup.png" width="256"></a>
 
 Pour plus d'aide vous avez trois vidéos suivant votre système d’exploitation :<br>
 <a href="https://www.anaconda.com/docs/getting-started/anaconda/install#windows-installation">Windows</a><br>
