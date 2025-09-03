@@ -13,6 +13,11 @@
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda <br>download(Windows, Linux, MacOs)</a></b>
 <a href="https://www.anaconda.com/download/success"><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/anaconda.png" width="256"></a><
 
+Pour plus d'aide vous avez trois vidéos suivant votre système d’exploitation :<br>
+<a href="https://www.anaconda.com/docs/getting-started/anaconda/install#windows-installation">Windows</a><br>
+<a href="https://www.anaconda.com/docs/getting-started/anaconda/install#linux-installer">Linux</a><br>
+<a href="https://www.anaconda.com/docs/getting-started/anaconda/install#macos-graphical-installer">MacOs</a><br>
+
 ## 02 Mise à jour des librairies de l’environnement <b>base</b>
 
 ```
