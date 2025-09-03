@@ -1,4 +1,5 @@
-# Bienvenue sur le référentiel des journées scientifiques de la FHU TARGET
+<div style='padding:15px;color:#030aa7;font-size:240%;text-align: center;font-style: italic;font-weight: bold;font-family: Georgia, serif'># Bienvenue sur le référentiel <br>Les journées scientifiques de la FHU TARGET</div>
+
 
 <img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/fhu_2025.png" width="256">
 
