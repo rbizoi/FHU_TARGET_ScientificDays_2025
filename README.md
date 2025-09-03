@@ -3,12 +3,14 @@
 
 <img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/fhu_2025.png" width="256">
 
+#Installation
 
-<b><div>Installation</div></b>
+## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda</a></b>
+
+<b></b><a href="https://github.com/git-for-windows/git/releases/tag/v2.51.0.windows.1">GitForWindowsHelper</a></b>
 
 
-<br>
-<b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda</a></b>
+
 <br>
 <div>Mise à jour des librairies de l’environnement <b>base</b></div>
 
