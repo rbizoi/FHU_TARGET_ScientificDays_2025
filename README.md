@@ -3,7 +3,7 @@
 
 <img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/fhu_2025.png" width="256">
 
-#Installation
+# Installation
 
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda</a></b>
 
