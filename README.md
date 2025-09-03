@@ -21,9 +21,15 @@ sudo apt install git-all
      <img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/keras_master.png" width="512">
 </a>
 
+## 03 Décompresser le fichier keras_master.zip dans un répertoire de travail
+exemple :
+```
+C:\dev\keras-master
+ou 
+/mnt/c/dev/keras-master       /home/utilisateur/keras-master
+```
 
-
-
+## 04 Mise à jour des librairies de l’environnement <b>base</b>
 
 <br>
 <div>Mise à jour des librairies de l’environnement <b>base</b></div>
