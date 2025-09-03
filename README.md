@@ -1,4 +1,4 @@
-# Bienvenue sur le référentiel <br>Les journées scientifiques de la FHU TARGET
+# Les journées scientifiques de la FHU TARGET
 
 
 <img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/fhu_2025.png" width="256">
