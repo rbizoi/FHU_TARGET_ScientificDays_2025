@@ -7,6 +7,41 @@
 
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda</a></b>
 
+## 04 Mise à jour des librairies de l’environnement <b>base</b>
+
+```
+conda activate root
+conda update --all
+python -m pip install --upgrade pip
+```
+
+## 05 Création de l’environnement <b>keras</b>
+
+## 05.1 <b>Windows</b>
+
+```
+conda create -n keras -c conda-forge  python==3.12 ipython ipython-sql jupyter notebook numpy pandas pyarrow matplotlib seaborn portpicker biopython flatbuffers redis colour pydot pygraphviz pyyaml pyspark folium scikit-image scikit-learn plotly imgaug tifffile imagecodecs
+```
+
+## 05.2 <b>Linux</b>
+
+```
+conda create -p /home/razvan/anaconda3/envs/keras -c conda-forge  python==3.12 ipython ipython-sql jupyter notebook numpy pandas pyarrow matplotlib seaborn portpicker biopython flatbuffers redis colour pydot pygraphviz pyyaml pyspark folium scikit-image scikit-learn plotly imgaug tifffile imagecodecs
+```
+
+## 06 Configuration de l’environnement <b>keras</b>
+
+```
+conda activate keras
+
+pip install keras tensorflow --upgrade
+```
+
+
+# Installation
+
+## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda</a></b>
+
 ## 02 Installation des outils Git (optional)
 ### <a href="https://github.com/git-for-windows/git/releases/tag/v2.51.0.windows.1">Installation sur Windows</a>
 ### Installation sur Linux
@@ -40,7 +75,7 @@ python -m pip install --upgrade pip
 
 ## 05 Création de l’environnement <b>keras</b>
 
-##                   05.1 <b>Windows</b>
+## 05.1 <b>Windows</b>
 
 ```
 conda create -n keras -c conda-forge  python==3.12 ipython ipython-sql jupyter notebook numpy pandas pyarrow matplotlib seaborn portpicker biopython flatbuffers redis colour pydot pygraphviz pyyaml pyspark folium scikit-image scikit-learn plotly imgaug tifffile imagecodecs
@@ -54,24 +89,13 @@ conda create -p /home/razvan/anaconda3/envs/keras -c conda-forge  python==3.12 i
 
 ## 06 Configuration de l’environnement <b>keras</b>
 
-dans le répertoire ou vous avez décompressé le fichier <b>keras_master.zip</b> exécutez les commandes suivantes 
+Dans le répertoire ou vous avez décompressé le fichier <b>keras_master.zip</b> exécutez les commandes suivantes 
 
 ```
 conda activate keras
 
-pip install --upgrade keras tensorflow
-```
-<br>
-<div><b>Linux</b> </div>
-<br>
+pip install -r requirements.txt
+pip install keras tensorflow --upgrade
+pip install  --upgrade
 
 ```
-# conda remove -n cours --all -y
-conda create -p /home/utilisateur/anaconda3/envs/cours -c conda-forge  python==3.10 ipython ipython-sql jupyter notebook numpy pandas pyarrow matplotlib seaborn portpicker biopython flatbuffers redis colour pydot pygraphviz pyyaml pyspark folium scikit-image scikit-learn plotly imgaug tifffile imagecodecs
-
-conda activate cours
-
-pip install --upgrade keras tensorflow
-```
-
-https://github.com/keras-team/keras/tree/master
