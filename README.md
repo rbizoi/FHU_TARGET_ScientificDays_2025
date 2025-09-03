@@ -1,7 +1,12 @@
 # Les journées scientifiques de la FHU TARGET
 
+<table>
+    <tr>                                                                                   
+         <th><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/fhu_2025.png" width="256"></th>
+         <th><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/strasbourg.png" width="256"></th>
+     </tr>
+</table>
 
-<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/fhu_2025.png" width="256">
 
 # Installation 
 
