@@ -7,7 +7,7 @@
 
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda</a></b>
 
-## 02 Installation des outils Git 
+## 02 Installation des outils Git (optional)
 ### <a href="https://github.com/git-for-windows/git/releases/tag/v2.51.0.windows.1">Installation sur Windows</a>
 ### Installation sur Linux
 ```
