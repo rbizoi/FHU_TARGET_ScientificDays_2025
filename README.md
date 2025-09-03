@@ -19,6 +19,10 @@
 >> <i><a href="https://www.anaconda.com/docs/getting-started/anaconda/install#macos-graphical-installer">MacOs</a><br></i>
 
 ## 02 Mise à jour des librairies de l’environnement <b>base</b>
+Ouvrir un environnement de commandes (une fenêtre shell pour Mac ou Linux).
+>> <b>Windows</b>
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/conda_prompt.png" width="256">
+
 
 ```
 conda activate root
