@@ -7,7 +7,7 @@
 
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda</a></b>
 
-<b></b><a href="https://github.com/git-for-windows/git/releases/tag/v2.51.0.windows.1">GitForWindowsHelper</a></b>
+## 01 <a href="https://github.com/git-for-windows/git/releases/tag/v2.51.0.windows.1">GitForWindowsHelper</a>
 
 
 
