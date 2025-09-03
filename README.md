@@ -7,7 +7,14 @@
 
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda</a></b>
 
-## 01 <a href="https://github.com/git-for-windows/git/releases/tag/v2.51.0.windows.1">GitForWindowsHelper</a>
+## 02 Installation des outils Git 
+### <a href="https://github.com/git-for-windows/git/releases/tag/v2.51.0.windows.1">Installation sur Windows</a>
+### Installation sur Linux
+```
+sudo dnf install git-all
+# ou 
+sudo apt install git-all
+```
 
 
 
