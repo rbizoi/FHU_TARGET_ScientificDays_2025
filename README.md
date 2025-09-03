@@ -40,13 +40,13 @@ python -m pip install --upgrade pip
 
 ## 05 Création de l’environnement <b>keras</b>
 
-## 05.1 <b>Windows</b>
+    ## 05.1 <b>Windows</b>
 
 ```
 conda create -n keras -c conda-forge  python==3.12 ipython ipython-sql jupyter notebook numpy pandas pyarrow matplotlib seaborn portpicker biopython flatbuffers redis colour pydot pygraphviz pyyaml pyspark folium scikit-image scikit-learn plotly imgaug tifffile imagecodecs
 ```
 
-## 05.2 <b>Linux</b>
+    ## 05.2 <b>Linux</b>
 
 ```
 conda create -p /home/razvan/anaconda3/envs/keras -c conda-forge  python==3.12 ipython ipython-sql jupyter notebook numpy pandas pyarrow matplotlib seaborn portpicker biopython flatbuffers redis colour pydot pygraphviz pyyaml pyspark folium scikit-image scikit-learn plotly imgaug tifffile imagecodecs
