@@ -17,9 +17,9 @@ sudo apt install git-all
 ```
 
 ## 02 Charger le référentiel Keras
-<a href="https://github.com/MedMNIST/MedMNIST/tree/main"><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/keras_master.png" width="256">
+<a href="https://github.com/keras-team/keras/tree/master">
+     <img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/keras_master.png" width="512">
 </a>
-https://github.com/keras-team/keras/tree/master
 
 
 
