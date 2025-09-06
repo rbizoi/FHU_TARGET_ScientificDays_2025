@@ -12,66 +12,60 @@ from sklearn.metrics import make_scorer, confusion_matrix, roc_curve, auc, accur
                             classification_report,roc_auc_score
 
 import tensorflow as tf
+import keras
 
-if int(str(sns.__version__).split('.')[1]) > 8 : 
-    plt.style.use('seaborn-v0_8-darkgrid')
-else:
-    plt.style.use('seaborn-darkgrid')
-    
+from configProjet import sauvegarderImage
+
 __version__=0.001
 
-palette = [
-            "#030aa7", "#e50000", "#d8863b", "#005f6a", "#6b7c85", "#751973", "#d1e5f0", "#fddbc7",
-            "#ffffcb", "#12e193", "#d8dcd6", "#ffdaf0", "#dfc5fe", "#f5054f", "#a0450e",
-            "#0339f8", "#f4320c", "#fec615", "#017a79", "#85a3b2", "#fe2f4a", "#a00498", "#b04e0f",
-            "#0165fc", "#ff724c", "#fddc5c", "#11875d", "#89a0b0", "#fe828c", "#cb00f5", "#b75203",
-            "#0485d1", "#ff7855", "#fbeeac", "#0cb577", "#95a3a6", "#ffb7ce", "#c071fe", "#ca6b02",
-            "#92c5de", "#f4a582", "#fef69e", "#18d17b", "#c5c9c7", "#ffcfdc", "#caa0ff", "#cb7723",
-            "#d1e5f0", "#fddbc7", "#ffffcb", "#12e193", "#d8dcd6", "#ffdaf0", "#dfc5fe", "#d8863b",
-            "#030764", "#be0119", "#dbb40c", "#005249", "#3c4142", "#cb0162", "#5d1451", "#653700",
-            "#040348", "#67001f", "#b27a01", "#002d04", "#000000", "#a0025c", "#490648", "#3c0008"
-          ]
+def preprocessionID(x):return x
 
-def controleExistenceRepertoire(directory, create_if_needed=True):
-    """Voir si le répertoire existe. S'il n'existe pas il est créé."""
-    path_exists = os.path.exists(directory)
-    if path_exists:
-        if not os.path.isdir(directory):
-            raise Exception("Trouvé le nom "+directory+" mais c'est un fichier, pas un répertoire")
-            return False
-        return True
-    if create_if_needed:
-        os.makedirs(directory)
+modelDictionnaire = {
+                      # 'VGG19':{'model':keras.applications.VGG19,'preprocess':keras.applications.vgg19.preprocess_input},      
+                      'ResNet152V2':{'model':keras.applications.ResNet152V2,'preprocess':keras.applications.resnet_v2.preprocess_input},  
+                      'DenseNet201':{'model':keras.applications.DenseNet201,'preprocess':keras.applications.densenet.preprocess_input},  
+                      'Xception':{'model':keras.applications.Xception,'preprocess':keras.applications.xception.preprocess_input},  
+                      'InceptionV3':{'model':keras.applications.InceptionV3,'preprocess':keras.applications.inception_v3.preprocess_input},  
+                      'InceptionResNetV2':{'model':keras.applications.InceptionResNetV2,'preprocess':keras.applications.inception_resnet_v2.preprocess_input},
+                      'MobileNetV3Small':{'model':keras.applications.MobileNetV3Small,'preprocess':keras.applications.mobilenet_v3.preprocess_input},
+                      'EfficientNetV2S':{'model':keras.applications.EfficientNetV2S,'preprocess':preprocessionID},  
+                      'ConvNeXtSmall':{'model':keras.applications.ConvNeXtSmall,'preprocess':preprocessionID},  
+                    }
 
-def sauvegarderImage( fichier, repertoireEnregistrement):
-    """Enregistrez la figure. Appelez la méthode juste avant plt.show ()."""
-    plt.savefig(os.path.join(repertoireEnregistrement,
-                             fichier+f"--{dt.now().strftime('%Y_%m_%d_%H.%M.%S')}.png"), 
-                             dpi=600, 
-                             bbox_inches='tight')
+def initParametresExecution(image_size=(160, 160, 3),
+                            batch_size = 32,
+                            epochs=1024,
+                            repertoire='../donnees/WhiteBloodCells-8-tfrecords',
+                            cycle_length=None,
+                            deterministic=None,
+                            repetition=1,
+                            bufferAleatoire=1024):
+
+    # with open(os.path.join(repertoire,'dictLabels'), 'wb') as fichier:
+    #     pickle.dump(dictLabels, fichier)
+    with open(os.path.join(repertoire,'dictLabels'), 'rb') as fichier:
+        dictLabels = pickle.load(fichier)
     
-def sauvegarderModelPoids(model, fichierPoids, repertoireSauvegardes):
-    """Enregistrez les poids du modèle Keras."""
-    if fichierPoids != None:
-        controleExistenceRepertoire(repertoireSauvegardes)
-        nomFichier = os.path.join(repertoireSauvegardes, '{}.keras'.format(fichierPoids))
-        model.save_weights(nomFichier)
+    nombreClasses=len(dictLabels.keys())
+    pipeline_apprentissage = getPipelineDataset(repertoire= os.path.join(repertoire,'apprentissage','*'),
+                                                image_size=image_size,
+                                                batch_size=batch_size,
+                                                apprentissage=True,
+                                                cycle_length=None,
+                                                deterministic=None,
+                                                repetition=repetition,
+                                                bufferAleatoire=1024)
+    pipeline_validation = getPipelineDataset(repertoire= os.path.join(repertoire,'validation','*'),
+                                                image_size=image_size,
+                                                batch_size=batch_size,
+                                                apprentissage=True,
+                                                cycle_length=None,
+                                                deterministic=None,
+                                                repetition=1,
+                                                bufferAleatoire=1024)    
+    
+    return image_size,batch_size,epochs,dictLabels,nombreClasses,pipeline_apprentissage,pipeline_validation
 
-def sauvegarderModel(model, fichier, repertoireSauvegardes):
-    """Enregistrez le modèle Keras."""
-    if fichier != None:
-        controleExistenceRepertoire(repertoireSauvegardes)
-        nomFichier = os.path.join(repertoireSauvegardes, '{}.keras'.format(fichier))
-        model.save(nomFichier)
-
-def lectureModelPoids(model, fichier, repertoireSauvegardes):
-    """Si le fichier existe, il est chargé et retourne True, sinon retourne False."""
-    nomFichier = os.path.join(repertoireSauvegardes, '{}.keras'.format(fichier))
-    if os.path.exists(nomFichier):
-        if os.path.isfile(nomFichier):
-            model.load_weights(nomFichier)
-            return True
-    return False
 
 def getPipelineDataset(repertoire,
                        image_size,
@@ -97,8 +91,8 @@ def getPipelineDataset(repertoire,
     
     def _dictToImageLabel(enregistrement):
         return enregistrement['image'],enregistrement['label']
-    
-    pipeline = tf.data.Dataset.list_files(repertoire)
+        
+    pipeline = tf.data.Dataset.list_files(repertoire,shuffle=True)
     pipeline = pipeline.interleave( tf.data.TFRecordDataset,
                                     cycle_length=cycle_length,
                                     num_parallel_calls=tf.data.AUTOTUNE, 
@@ -113,21 +107,122 @@ def getPipelineDataset(repertoire,
 
     return pipeline
 
-def evolutionTauxApprentissage(epoch,
-                               initial_lrate=1e-03,
-                               max_lrate=1e-03,
-                               min_lrate=1e-05,
-                               epochs_runup_lrate=0,
-                               epochs_sustain_lrate=0,
-                               drop_lrate=0.96):
-    # epochs_drop = epochs * 0.1
-    if epoch < epochs_runup_lrate:
-        lrate = (max_lrate - initial_lrate) / epochs_runup_lrate * epoch + initial_lrate
-    elif epoch < epochs_runup_lrate + epochs_sustain_lrate:
-        lrate = max_lrate
-    else:
-        lrate = (max_lrate - min_lrate) * drop_lrate**(epoch - epochs_runup_lrate - epochs_sustain_lrate) + min_lrate
-    return lrate
+# def evolutionTauxApprentissage(epoch,
+#                                initial_lrate=1e-03,
+#                                max_lrate=1e-03,
+#                                min_lrate=1e-05,
+#                                epochs_runup_lrate=0,
+#                                epochs_sustain_lrate=0,
+#                                drop_lrate=0.96):
+#     # epochs_drop = epochs * 0.1
+#     if epoch < epochs_runup_lrate:
+#         lrate = (max_lrate - initial_lrate) / epochs_runup_lrate * epoch + initial_lrate
+#     elif epoch < epochs_runup_lrate + epochs_sustain_lrate:
+#         lrate = max_lrate
+#     else:
+#         lrate = (max_lrate - min_lrate) * drop_lrate**(epoch - epochs_runup_lrate - epochs_sustain_lrate) + min_lrate
+#     return lrate
+
+
+def creationCompilationModele(nomModel, 
+                              modelDictionnaire, 
+                              image_size, 
+                              nombreClasses, 
+                              optimizer=keras.optimizers.Adam(1e-03)
+                             ):
+    pretrained_model = modelDictionnaire[nomModel]['model'](weights=None, include_top=False)
+    
+    inputs = keras.Input(shape=image_size, name='input_layer')
+    x = modelDictionnaire[nomModel]['preprocess'](inputs)    
+    x = pretrained_model(x)    
+    x = keras.layers.GlobalAveragePooling2D()(x)
+    outputs = keras.layers.Dense(nombreClasses, activation='softmax', name='couche_prob')(x)
+    
+    model = keras.Model(inputs, outputs, name=f'{nomModel}_blood')
+
+    model.compile(
+        optimizer=optimizer, 
+        loss=keras.losses.SparseCategoricalCrossentropy(),
+        metrics=[keras.metrics.SparseCategoricalAccuracy(name='accuracy')],
+    )
+    
+    return model
+
+def creationRappelsExecution( repertoireModelSauvegarde, 
+                              repertoireModelCKP,
+                              repertoireModelLogs, 
+                              patienceArretPrecoce=None,
+                              initial_lrate=1e-03,
+                              max_lrate=1e-03,
+                              min_lrate=1e-05,
+                              epochs_runup_lrate=0,
+                              epochs_sustain_lrate=0,
+                              drop_lrate=0.96
+                              ):
+    
+    def evolutionTauxApprentissage(epoch,
+                                   initial_lrate=initial_lrate,
+                                   max_lrate=max_lrate,
+                                   min_lrate=min_lrate,
+                                   epochs_runup_lrate=epochs_runup_lrate,
+                                   epochs_sustain_lrate=epochs_sustain_lrate,
+                                   drop_lrate=drop_lrate):
+        # epochs_drop = epochs * 0.1
+        if epoch < epochs_runup_lrate:
+            lrate = (max_lrate - initial_lrate) / epochs_runup_lrate * epoch + initial_lrate
+        elif epoch < epochs_runup_lrate + epochs_sustain_lrate:
+            lrate = max_lrate
+        else:
+            lrate = (max_lrate - min_lrate) * drop_lrate**(epoch - epochs_runup_lrate - epochs_sustain_lrate) + min_lrate
+        return lrate
+    
+    filename = os.path.join(repertoireModelSauvegarde, 'modelVLoss.keras')
+    learningRate = keras.callbacks.LearningRateScheduler(evolutionTauxApprentissage)
+    checkpointLoss = keras.callbacks.ModelCheckpoint(filename, 
+                                                        monitor = 'val_loss',
+                                                        verbose = 1, 
+                                                        save_best_only = True, 
+                                                        mode = 'min')
+    
+    backupAndRestore = keras.callbacks.BackupAndRestore(backup_dir=repertoireModelCKP, delete_checkpoint=False)
+    tensorBoard = keras.callbacks.TensorBoard(log_dir=repertoireModelLogs)
+
+    if patienceArretPrecoce is not None :        
+        return [learningRate,checkpointLoss,backupAndRestore,tensorBoard,
+                keras.callbacks.EarlyStopping(monitor='val_loss', patience=patienceArretPrecoce, verbose=1)]
+    else :
+        return [learningRate,checkpointLoss,backupAndRestore,tensorBoard]
+        
+    
+
+def entrainementModele( model, 
+                        pipelineApprentissage, 
+                        pipelineValidation, 
+                        epochs, 
+                        batch_size,
+                        callbacks,
+                        verbose, 
+                        repertoireModelSauvegarde):
+    t1 = time.time()  
+    
+    model_history = model.fit(pipelineApprentissage, 
+                        validation_data=pipelineValidation, 
+                        epochs=epochs, 
+                        batch_size=batch_size,
+                        callbacks=callbacks,
+                        verbose=verbose
+                       )
+    
+    model = tf.keras.models.load_model(os.path.join(repertoireModelSauvegarde,'modelVLoss.keras'))
+    print(f"Exécution  : {(time.time() - t1)/60:0.2f} m")
+    return model_history, model
+
+def sauvegarderModel(model, fichier, repertoireSauvegardes):
+    """Enregistrez le modèle Keras."""
+    if fichier != None:
+        controleExistenceRepertoire(repertoireSauvegardes)
+        nomFichier = os.path.join(repertoireSauvegardes, '{}.keras'.format(fichier))
+        model.save(nomFichier)    
 
 def sauvegardeHistorique(model,
                          repertoireSauvegardes,
@@ -136,95 +231,18 @@ def sauvegardeHistorique(model,
     history = pd.DataFrame( model.history)
     history.reset_index(inplace=True)
     history.rename(columns={'index':'epoch'},inplace=True)
+    history.epoch += 1
     history.to_parquet(os.path.join(repertoireSauvegardes,f'{nomSauvegarde}.gzip'),compression='gzip', engine='pyarrow') 
     return history
 
-
-def afficheHistoriqueEntrainement(history, palette, nom, repertoireEnregistrement=None):
-    fig, ax = plt.subplots(nrows=1, ncols=2,figsize=(48,16));
-    markersize = 8
-    linewidth=2
-    
-    graph = sns.lineplot(x='epoch', 
-                         y='accuracy',  
-                         data=history,
-                         ax=ax[0],      
-                         label='accuracy',
-                         err_style=None, 
-                         marker='o',
-                         markersize=markersize,
-                         linewidth=linewidth,
-                         color=palette[0],
-                         );
-    graph = sns.lineplot(x='epoch', 
-                         y='val_accuracy',  
-                         data=history,
-                         ax=ax[0],      
-                         label='val_accuracy',
-                         err_style=None, 
-                         marker='o',
-                         markersize=markersize,
-                         linewidth=linewidth,
-                         color=palette[1],
-                         );
-        
-    ax[0].set_title(f'Accuracy {nom}', fontproperties=fm.FontProperties(size=32))
-    
-    graph = sns.lineplot(x='epoch', 
-                         y='loss',  
-                         data=history,
-                         ax=ax[1],      
-                         label='loss',
-                         err_style=None, 
-                         marker='o',
-                         markersize=markersize,
-                         linewidth=linewidth,
-                         color=palette[0],
-                         );
-    graph = sns.lineplot(x='epoch', 
-                         y='val_loss',  
-                         data=history,
-                         ax=ax[1],      
-                         label='val_loss',
-                         err_style=None, 
-                         marker='o',
-                         markersize=markersize,
-                         linewidth=linewidth,
-                         color=palette[1],
-                         );
-    ax[1].set_title(f'Loss {nom}', fontproperties=fm.FontProperties(size=32))
-
-    if repertoireEnregistrement is not None :
-        sauvegarderImage(f'afficheHistoriqueEntrainement-{nom}', repertoireEnregistrement)
-
-
-
-def afficheMatriceConfusion(observations,predictions,dictLabels, repertoireEnregistrement):
-    plt.figure(figsize=(8,8))
-    sns.set(font_scale=1.5)
-    sns.heatmap(pd.crosstab(observations,predictions), 
-                fmt= '.0f',
-                linewidths=0.3,
-                #vmax=1.0, 
-                square=True, 
-                cmap=plt.cm.Blues,
-                linecolor='white', 
-                annot=True,
-                cbar=False,
-                xticklabels=dictLabels.values(), 
-                yticklabels=dictLabels.values()
-               );
-    plt.xlabel('Observations', fontsize = 18);
-    plt.ylabel('Prédictions', fontsize = 18);
-    sauvegarderImage('afficheMatriceConfusion', repertoireEnregistrement)
 
 def executeApprentissageChoixClassifieurs(model,
                                           X_test,
                                           y_test,
                                           label_dict,
-                                          couleurs,
+                                          palette,
                                           repertoireEnregistrement,
-                                          nom_essai = 'initial'
+                                          nom_essai=''
                                          ):
     
     def afficheCourbes(vraisPositifs,fauxPositifs,aucROCt,precisions,sensibilites,avgPrecRec,nbClasses,lw,label_dict):
@@ -239,9 +257,9 @@ def executeApprentissageChoixClassifieurs(model,
         plt.ylim([-0.05, 1.05])
         plt.xlabel('Taux de faux Positifs-(1 - Spécificité) = VN / (FP + VN)',size=18)
         plt.ylabel('Taux de vrais positifs-Sensibilité = VP / (VP + FN)',size=18)
-        plt.title('Courbe ROC (Receiver Operating Caracteristic) -- ',size=20)
+        plt.title('Courbe ROC (Receiver Operating Caracteristic)',size=20)
         plt.legend(loc="lower right"); #, fontsize='large'
-        sauvegarderImage('Courbe ROC', repertoireEnregistrement)
+        sauvegarderImage(f'Courbe ROC-{nom_essai}', repertoireEnregistrement)
         
         plt.figure(figsize=(24,24));
     
@@ -273,7 +291,7 @@ def executeApprentissageChoixClassifieurs(model,
         plt.ylabel('Précision = VP / (VP + FP)',size=18)        
         plt.title('Courbe Précision-Rappel',size=20)
         plt.legend(loc="lower right") # , fontsize = 'large'
-        sauvegarderImage('Courbe Précision-Rappel', repertoireEnregistrement)
+        sauvegarderImage(f'Courbe Précision-Rappel-{nom_essai}', repertoireEnregistrement)
     
     cvF1, cvF1SD, cvAccuracy, cvAccSD, aucROC, avgPrecRec, accuracy, balanced_accuracy, logloss, hammingloss, precision, sensibilite, \
     f1, f2, f05, jaccard, vrais_negatifs, faux_positifs, faux_negatifs, vrais_positifs, total_positifs, aucROCtn = \
@@ -290,7 +308,6 @@ def executeApprentissageChoixClassifieurs(model,
     
     
     lw = 1
-    # couleurs    = sns.hls_palette(len(classifieursDict.keys()), l=.4, s=.9)
     nbClasses   = len(label_dict.keys())
     listClasses = list(label_dict.keys())
     
@@ -398,83 +415,61 @@ def executeApprentissageChoixClassifieurs(model,
     resultats['essai'] = nom_essai
     return resultats
 
-def afficheDataset(donnees,labels,taille,image,dictLabels,cmap=None):
-    plt.figure(figsize=(image, image))
-    i=1
-    for image, label in zip(donnees[:taille],labels[:taille]):
-        ax = plt.subplot(1,taille, i)
-        if cmap is None :
-            plt.imshow(tf.cast(image, tf.int32))
-        else :
-            plt.imshow(image,cmap='gray')
-        plt.title(dictLabels[int(label)])
-        plt.axis("off")
-        i+=1
+def modelPersonalise(image_size, nombreClasses, listeFiltres=[128,128,256,512], dropout=0.5, activation=keras.ops.gelu):
+    preprocessData = tf.keras.Sequential([
+        keras.layers.Rescaling(1.0 / 255),
+    ])
+    
+    # Squeezenet architecture
+    def blockSqueezeNet(x, squeeze, expand):
+        
+        y  = keras.layers.Conv2D(filters=squeeze, kernel_size=1, padding='same')(x)
+        y  = keras.layers.BatchNormalization()(y)
+        y = keras.layers.Activation(activation)(y)
+        
+        y1 = keras.layers.Conv2D(filters=expand//2, kernel_size=1, padding='same')(y)
+        y1 = keras.layers.BatchNormalization()(y1)
+        y1 = keras.layers.Activation(activation)(y1)
+        
+        y3 = keras.layers.Conv2D(filters=expand//2, kernel_size=3, padding='same')(y)
+        y3 = keras.layers.BatchNormalization()(y3)
+        y3 = keras.layers.Activation(activation)(y3)
+    
+        z = keras.layers.SeparableConv2D(expand//2, 3, padding="same")(x)
+        z = keras.layers.BatchNormalization()(z)
+        z = keras.layers.Activation(activation)(z)
+        
+        return keras.layers.concatenate([y1, y3, z])
             
-def afficheProbabilites(probabilities, ind, ax, dictLabels, repertoireEnregistrement):
-    
-    prediction = pd.DataFrame(probabilities).iloc[ind,:].reset_index()
-    prediction.columns = ['Classe','Probabilite']
-    prediction.Classe = prediction.Classe.apply(lambda x : f'{x:02d}-{dictLabels[x]}')
-    
-    graph = sns.barplot(
-                        x='Classe',
-                        y='Probabilite',
-                        data=prediction, #.sort_values('Probabilite',ascending=False),
-                        palette=palette[1:],
-                        ax=ax        
-                        );
-    graph.set_xticklabels(graph.get_xticklabels(), rotation=90)
-    ax.set_xlabel('');
-    ax.set_ylabel('');    
-    
-    for i, patche in enumerate(graph.patches):
-        if patche.get_height() > 0 :
-            graph.text(
-                        patche.get_x()+0.4,
-                        0.4, #2*patche.get_height()/3,
-                        f'{patche.get_height()*100:0.4f}%',
-                        color='black',
-                        rotation='vertical',
-                        # size='large',
-                        fontsize='large',
-                        bbox=dict(boxstyle='round', facecolor='white', alpha=0.6),
-                        verticalalignment='center',
-                        horizontalalignment='center',
-                       )       
-    sauvegarderImage('Probabilités pour les 4 premiers prédictions', repertoireEnregistrement)
 
-
-
-def afficheDistributions(donnees, dictLabels, palette, repertoireEnregistrement):
-    fig, ax = plt.subplots(figsize=(24,12));
+    inputs = keras.Input(shape=image_size)
     
-    affichage = pd.DataFrame(donnees["train_labels"].ravel(),columns=['label'])
-    affichage['nom'] = affichage['label'].apply(lambda x: dictLabels[x])
-    affichage = affichage.groupby(['nom']).label.count().reset_index().rename(columns={'label':'nombre'})
-    affichage['%'] = affichage.nombre * 100 / affichage.nombre.sum()
+    x = preprocessData(inputs)
     
-    graph = sns.barplot(x="nom",y='nombre', data=affichage, palette=palette,  ax=ax)
-    loc, labels = plt.xticks()
-    graph.set_xticklabels(labels, rotation=90);
+    x = keras.layers.Conv2D(listeFiltres[0], 3, strides=1, padding="same",kernel_initializer='glorot_normal')(x)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.Activation(activation)(x)
+    previous_block_activation = x  # Set aside residual
     
-    for patche in graph.patches:
-        if patche.get_height() > 0 :
-            graph.text(
-                        patche.get_x() + patche.get_width() / 2 ,
-                        affichage['nombre'].mean()/2, 
-                        f"{int(patche.get_height())} - {patche.get_height()*100/affichage.nombre.sum():0.2f}%",
-                        color='black',
-                        rotation='vertical',
-        #                 size='large',
-        #                 fontsize='large',
-                        bbox=dict(boxstyle='round', facecolor='white', alpha=0.6),
-                        verticalalignment='center',
-                        horizontalalignment='center',
-                       )  
-                
-    ax.set_xlabel('');
-    ax.set_ylabel('');
+    for size in listeFiltres[1:]:
+        x = blockSqueezeNet(x, size, size*2)    
+        x = keras.layers.Conv2D(size, 3, strides=2, padding="same")(x)
+        
+        residual = keras.layers.Conv2D(size, 1, strides=2, padding="same")(previous_block_activation)
+        
+        x = keras.layers.add([x, residual])  # Add back residual
+        previous_block_activation = x  # Set aside next residual
+    
+    x = keras.layers.SeparableConv2D(1024, 3, padding="same")(x)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.Activation(activation)(x)
+    
+    x = keras.layers.GlobalAveragePooling2D()(x)
+    
+    x = keras.layers.Dropout(dropout)(x)
+    outputs = keras.layers.Dense(nombreClasses, activation="softmax")(x)
+    
+    return keras.Model(inputs, outputs)
 
 
 if (__name__ == "__main__"):
