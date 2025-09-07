@@ -184,7 +184,7 @@ def creationRappelsExecution( repertoireModelSauvegarde,
                                                         save_best_only = True, 
                                                         mode = 'min')
     
-    backupAndRestore = keras.callbacks.BackupAndRestore(backup_dir=repertoireModelCKP, delete_checkpoint=False)
+    backupAndRestore = keras.callbacks.BackupAndRestore(backup_dir=repertoireModelCKP) #, delete_checkpoint=False
     tensorBoard = keras.callbacks.TensorBoard(log_dir=repertoireModelLogs)
 
     if patienceArretPrecoce is not None :        
@@ -415,30 +415,69 @@ def executeApprentissageChoixClassifieurs(model,
     resultats['essai'] = nom_essai
     return resultats
 
-def modelPersonalise(image_size, nombreClasses, listeFiltres=[128,128,256,512], dropout=0.5, activation=keras.ops.gelu):
-    preprocessData = tf.keras.Sequential([
-        keras.layers.Rescaling(1.0 / 255),
-    ])
+def modelCNNSimple(image_size, 
+                   num_classes, 
+                   activation,
+                   nb_filtres, 
+                   preprocessData):
     
-    # Squeezenet architecture
-    def blockSqueezeNet(x, squeeze, expand):
-        
-        y  = keras.layers.Conv2D(filters=squeeze, kernel_size=1, padding='same')(x)
-        y  = keras.layers.BatchNormalization()(y)
+    inputs = keras.Input(shape=image_size)
+    
+    x = preprocessData(inputs)
+    
+    x = keras.layers.Conv2D(nb_filtres, kernel_size=(3,3), strides=(1,1), padding="same",kernel_initializer='glorot_normal')(x)
+    x = keras.layers.BatchNormalization(scale=False)(x)
+    x = keras.layers.Activation(activation)(x)
+    
+    x = keras.layers.Conv2D(nb_filtres, kernel_size=(1,1), strides=(1,1), padding="same",kernel_initializer='glorot_normal')(x)
+    x = keras.layers.BatchNormalization(scale=False)(x)
+    x = keras.layers.Activation(activation)(x)
+
+    x = keras.layers.Conv2D(nb_filtres, kernel_size=(3,3), strides=(2,2), padding="same",kernel_initializer='glorot_normal')(x)
+    x = keras.layers.BatchNormalization(scale=False)(x)
+    x = keras.layers.Activation(activation)(x)
+
+    x = keras.layers.Conv2D(nb_filtres//2, kernel_size=(1,1), strides=(1,1), padding="same",kernel_initializer='glorot_normal')(x)
+    x = keras.layers.BatchNormalization(scale=False)(x)
+    x = keras.layers.Activation(activation)(x)
+
+    x = keras.layers.Conv2D(nb_filtres//2, kernel_size=(3,3), strides=(1,1), padding="same",kernel_initializer='glorot_normal')(x)
+    x = keras.layers.BatchNormalization(scale=False)(x)
+    x = keras.layers.Activation(activation)(x)
+    
+    x = keras.layers.Conv2D(nb_filtres//2, kernel_size=(3,3), strides=(2,2), padding="same",kernel_initializer='glorot_normal')(x)
+    x = keras.layers.BatchNormalization(scale=False)(x)
+    x = keras.layers.Activation(activation)(x)
+    
+    x = keras.layers.GlobalAveragePooling2D()(x)
+    
+    x = keras.layers.Dropout(0.5)(x)
+    outputs = keras.layers.Dense(num_classes, activation="softmax")(x)
+    return keras.Model(inputs, outputs, name='ModelPersonaliseMNIST')
+    
+
+def modelPersonalise(image_size, nombreClasses, listeFiltres=[128,128,256,512], dropout=0.5, activation=keras.ops.gelu, preprocessData=preprocessionID):
+    
+    def blockTraitement(x, filtres):
+        y  = keras.layers.Conv2D(filters=filtres, kernel_size=1, padding='same')(x)
+        y  = keras.layers.BatchNormalization(scale=False)(y)
         y = keras.layers.Activation(activation)(y)
         
-        y1 = keras.layers.Conv2D(filters=expand//2, kernel_size=1, padding='same')(y)
-        y1 = keras.layers.BatchNormalization()(y1)
+        y1 = keras.layers.Conv2D(filters=filtres, kernel_size=1, padding='same')(y)
+        y1 = keras.layers.BatchNormalization(scale=False)(y1)
         y1 = keras.layers.Activation(activation)(y1)
         
-        y3 = keras.layers.Conv2D(filters=expand//2, kernel_size=3, padding='same')(y)
-        y3 = keras.layers.BatchNormalization()(y3)
+        y3 = keras.layers.Conv2D(filters=filtres, kernel_size=3, padding='same')(y)
+        y3 = keras.layers.BatchNormalization(scale=False)(y3)
         y3 = keras.layers.Activation(activation)(y3)
     
-        z = keras.layers.SeparableConv2D(expand//2, 3, padding="same")(x)
-        z = keras.layers.BatchNormalization()(z)
+        z = keras.layers.SeparableConv2D(filtres, 3, padding="same")(x)
+        z = keras.layers.BatchNormalization(scale=False)(z)
         z = keras.layers.Activation(activation)(z)
-        
+        z = keras.layers.Conv2D(filters=filtres, kernel_size=1, padding='same')(z)
+        z = keras.layers.BatchNormalization(scale=False)(z)
+        z = keras.layers.Activation(activation)(z) 
+
         return keras.layers.concatenate([y1, y3, z])
             
 
@@ -447,12 +486,12 @@ def modelPersonalise(image_size, nombreClasses, listeFiltres=[128,128,256,512], 
     x = preprocessData(inputs)
     
     x = keras.layers.Conv2D(listeFiltres[0], 3, strides=1, padding="same",kernel_initializer='glorot_normal')(x)
-    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.BatchNormalization(scale=False)(x)
     x = keras.layers.Activation(activation)(x)
     previous_block_activation = x  # Set aside residual
     
     for size in listeFiltres[1:]:
-        x = blockSqueezeNet(x, size, size*2)    
+        x = blockTraitement(x, size)    
         x = keras.layers.Conv2D(size, 3, strides=2, padding="same")(x)
         
         residual = keras.layers.Conv2D(size, 1, strides=2, padding="same")(previous_block_activation)
@@ -461,7 +500,7 @@ def modelPersonalise(image_size, nombreClasses, listeFiltres=[128,128,256,512], 
         previous_block_activation = x  # Set aside next residual
     
     x = keras.layers.SeparableConv2D(1024, 3, padding="same")(x)
-    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.BatchNormalization(scale=False)(x)
     x = keras.layers.Activation(activation)(x)
     
     x = keras.layers.GlobalAveragePooling2D()(x)
@@ -469,7 +508,63 @@ def modelPersonalise(image_size, nombreClasses, listeFiltres=[128,128,256,512], 
     x = keras.layers.Dropout(dropout)(x)
     outputs = keras.layers.Dense(nombreClasses, activation="softmax")(x)
     
-    return keras.Model(inputs, outputs)
+    return keras.Model(inputs, outputs, name='modelPersonalise')
+
+def modelPersonaliseInception(image_size, 
+                              nombreClasses, 
+                              listeFiltres=[128,128,256,512], 
+                              dropout=0.5, 
+                              activation=keras.ops.gelu, 
+                              preprocessData=preprocessionID):
+    
+    def conv2d_bn( x, filters, num_row, num_col, padding="same", strides=(1, 1), activation="relu"):
+        x = keras.layers.Conv2D(filters,(num_row, num_col),strides=strides,padding=padding,use_bias=False)(x)
+        x = keras.layers.BatchNormalization(scale=False)(x)
+        x = keras.layers.Activation(activation)(x)
+        return x        
+    
+    inputs = keras.Input(shape=image_size)
+    
+    x = preprocessData(inputs)
+    
+    x = keras.layers.Conv2D(listeFiltres[0], 3, strides=1, padding="same",kernel_initializer='glorot_normal',use_bias=False)(x)
+    x = keras.layers.BatchNormalization(scale=False)(x)
+    x = keras.layers.Activation(activation)(x)
+    previous_block_activation = x  # Set aside residual
+    
+    for size in listeFiltres[1:]:
+        branch1x1 = conv2d_bn(x, size, 1, 1, activation=activation)
+        
+        branch3x3 = conv2d_bn(branch1x1, size, 3, 3, activation=activation, padding="same")
+        branch3x3_1 = conv2d_bn(branch3x3, size, 3, 3, activation=activation, padding="same")
+        branch3x3 = keras.layers.concatenate([branch3x3, branch3x3_1])
+    
+        branch_pool = keras.layers.AveragePooling2D((3, 3), strides=(1, 1), padding="same")(x)
+        branch_pool  = conv2d_bn(branch_pool, size//2, 1, 1, activation=activation)
+
+        branch3x3X1 = conv2d_bn(branch1x1, size, 3, 3, activation=activation)
+        branch3x3X1_1 = conv2d_bn(branch3x3X1, size, 1, 3, activation=activation)
+        branch3x3X1_2 = conv2d_bn(branch3x3X1, size, 3, 1, activation=activation)
+        branch3x3X1 = keras.layers.concatenate([branch3x3X1_1, branch3x3X1_2])
+
+        branch3X1_1 = conv2d_bn(branch1x1, size, 1, 3, activation=activation)
+        branch3X1_2 = conv2d_bn(branch1x1, size, 3, 1, activation=activation)
+        branch3X1 = keras.layers.concatenate([branch3X1_1, branch3X1_2])
+
+        x = keras.layers.concatenate([branch3x3, branch_pool, branch1x1, branch3x3X1, branch3X1],)
+        x = keras.layers.Conv2D(size, 3, strides=2, padding="same",use_bias=False)(x)
+    
+        residual = keras.layers.Conv2D(size, 1, strides=2, padding="same",use_bias=False)(previous_block_activation)
+        
+        x = keras.layers.add([x, residual])  # Add back residual
+        previous_block_activation = x  # Set aside next residual
+        
+    x = keras.layers.GlobalAveragePooling2D()(x)
+    
+    x = keras.layers.Dropout(dropout)(x)
+    outputs = keras.layers.Dense(nombreClasses, activation="softmax")(x)
+    
+    return keras.Model(inputs, outputs, name='modelPersonaliseInception')
 
 
 if (__name__ == "__main__"):
