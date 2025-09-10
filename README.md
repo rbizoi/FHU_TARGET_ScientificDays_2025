@@ -2,7 +2,7 @@
 
 <table>
     <tr>                                                                                   
-         <th><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/fhu_2025.png" width="256"></th>
+         <th><a href="https://mcusercontent.com/d294b6479f9cb471696658488/files/7f213487-ba37-ba2c-ba36-be9085345271/FHU_TARGET_Scientific_Days_ndash_Program.pdf"><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/fhu_2025.png" width="256"></a></th>
          <th><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/strasbourg.png" width="256"></th>
      </tr>
 </table>
