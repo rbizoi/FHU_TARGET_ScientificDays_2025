@@ -58,4 +58,3 @@ conda activate keras
 pip install keras tensorflow --upgrade
 ```
 
-<a href="https://github.com/rbizoi/FHU_TARGET_ScientificDays_2025/tree/main/GoogleColab">Google colab</a>
