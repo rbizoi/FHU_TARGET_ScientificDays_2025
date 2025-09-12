@@ -14,6 +14,26 @@ Pour utiliser un notebook dans **Google Colab** vous devez effectuer las étapes
  
 <a href="https://colab.research.google.com/">Google Colab</a> 
 
+>> Voici l'ecran de connection et vous pouvez utiliser votre compte google, autrement vous pouvez créer un pour tester les documents.
+
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/003.png" width="256">
+
+
+# 3 
+>> Importer le document que vous avez téléchargé 
+
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/003.png" width="256">
+
+# 4 
+>> Importer le document que vous avez téléchargé ou le charger directiment à partir de github 
+
+
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/004.png" width="256">
+
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/005.png" width="256">
+
+
+
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda <br>download(Windows, Linux, MacOs)</a></b>
 <a href="https://www.anaconda.com/download/success"><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/anaconda_setup.png" width="256"></a>
 
