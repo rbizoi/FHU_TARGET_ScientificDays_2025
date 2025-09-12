@@ -5,6 +5,15 @@ Pour utiliser un notebook dans **Google Colab** vous devez effectuer las étapes
 # 1 
 >> Télécharger le notebook que vous souhaitez charger dans Google Colab
 
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/001.png" width="256">
+
+<img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/002.png" width="256">
+
+# 2
+>> Connectez vous à Google Colab, il est possible de l’utiliser gratuitement avec un compte google mail.
+ 
+<a href="https://colab.research.google.com/">Google Colab</a> 
+
 ## 01 <b></b><a href="https://www.anaconda.com/download/success">Installation Anaconda <br>download(Windows, Linux, MacOs)</a></b>
 <a href="https://www.anaconda.com/download/success"><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/anaconda_setup.png" width="256"></a>
 
