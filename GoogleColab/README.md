@@ -12,7 +12,7 @@ Pour utiliser un notebook dans **Google Colab** vous devez effectuer las étapes
 # 2
 >> Connectez vous à Google Colab, il est possible de l’utiliser gratuitement avec un compte google mail.
 
-<a href="https://github.com/rbizoi/FHU_TARGET_ScientificDays_2025/tree/main/GoogleColab"><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/Google_Colab.png" width="56">Google colab </a> 
+<a href="https://colab.research.google.com/"><img src="https://raw.githubusercontent.com/rbizoi/FHU_TARGET_ScientificDays_2025/refs/heads/main/images/Google_Colab.png" width="56">Google colab </a> 
 
 >> Voici l'ecran de connection et vous pouvez utiliser votre compte google, autrement vous pouvez créer un pour tester les documents.
 
